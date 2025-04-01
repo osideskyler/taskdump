@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Energy To-Do</title>
+    <style>
+        /* Basic Reset & Font */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the top */
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 10px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        #task-input {
+            flex-grow: 1; /* Take available space */
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            min-width: 200px; /* Ensure it doesn't get too small */
+        }
+
+        .input-options {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap; /* Allow options to wrap too */
+        }
+
+        .input-options label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+         .input-options input[type="radio"] {
+            margin-right: 3px;
+             accent-color: #3498db; /* Modern look for radio */
+         }
+
+        #add-task-btn {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+            white-space: nowrap; /* Prevent button text wrapping */
+        }
+
+        #add-task-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Task Sections */
+        .task-section {
+            margin-bottom: 30px;
+        }
+
+        .task-section h2 {
+            color: #34495e;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+            font-weight: 600;
+            font-size: 1.3rem;
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-list h3 {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+         .task-list h3:first-child {
+             margin-top: 0;
+         }
+
+        .task-item {
+            background-color: #fdfdfd;
+            border: 1px solid #eee;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s ease, opacity 0.3s ease;
+            word-break: break-word; /* Prevent long text overflow */
+        }
+
+        .task-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .task-item.high-energy {
+            border-left: 4px solid #e67e22; /* Orange for high energy */
+        }
+
+        .task-item.low-energy {
+            border-left: 4px solid #3498db; /* Blue for low energy */
+        }
+
+        .task-item .task-text {
+            flex-grow: 1;
+            margin-right: 15px;
+             cursor: pointer; /* Indicate it's clickable for completion */
+        }
+
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            color: #95a5a6;
+        }
+        .task-item.completed {
+            opacity: 0.7;
+             background-color: #f0f0f0;
+        }
+
+        .task-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 5px;
+            margin-left: 5px;
+            color: #7f8c8d;
+            transition: color 0.2s ease;
+        }
+
+         .task-actions .complete-btn {
+            /* Optional: Style if using a button instead of clicking text */
+            /* color: #2ecc71; */
+         }
+         .task-actions .delete-btn {
+             color: #e74c3c;
+         }
+
+        .task-actions button:hover {
+            /* color: #34495e; */
+        }
+        .task-actions .delete-btn:hover {
+             color: #c0392b;
+         }
+
+         /* Message for empty lists */
+        .empty-list-message {
+            color: #95a5a6;
+            font-style: italic;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 20px;
+            }
+            .input-area {
+                flex-direction: column;
+                align-items: stretch; /* Make items full width */
+            }
+            .input-options {
+                justify-content: space-around; /* Better spacing on small screens */
+                margin-top: 10px;
+            }
+            #add-task-btn {
+                width: 100%; /* Full width button */
+                margin-top: 10px;
+            }
+             .task-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .task-actions {
+                width: 100%;
+                text-align: right;
+                margin-top: 5px;
+            }
+             .task-item .task-text {
+                 margin-right: 0;
+             }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Daily Energy To-Do</h1>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <input type="text" id="task-input" placeholder="Enter new task...">
+            <div class="input-options">
+                <div>
+                    <label><input type="radio" name="energy" value="high" checked> High Energy</label>
+                    <label><input type="radio" name="energy" value="low"> Low Energy</label>
+                </div>
+                <div>
+                    <label><input type="radio" name="due" value="today" checked> Due Today</label>
+                    <label><input type="radio" name="due" value="upcoming"> Upcoming</label>
+                </div>
+            </div>
+            <button id="add-task-btn">Add Task</button>
+        </div>
+
+        <!-- Task Display Area -->
+        <div class="task-sections">
+            <div class="task-section" id="due-today-section">
+                <h2>Due Today</h2>
+                <ul class="task-list" id="due-today-list">
+                    <!-- Tasks will be injected here by JS -->
+                </ul>
+            </div>
+
+            <div class="task-section" id="upcoming-section">
+                <h2>Upcoming</h2>
+                <ul class="task-list" id="upcoming-list">
+                    <!-- Tasks will be injected here by JS -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const taskInput = document.getElementById('task-input');
+            const addTaskBtn = document.getElementById('add-task-btn');
+            const dueTodayList = document.getElementById('due-today-list');
+            const upcomingList = document.getElementById('upcoming-list');
+
+            let tasks = loadTasks();
+
+            // --- Event Listeners ---
+            addTaskBtn.addEventListener('click', addTask);
+            taskInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    addTask();
+                }
+            });
+
+            // Use event delegation for task actions (complete/delete)
+            dueTodayList.addEventListener('click', handleTaskAction);
+            upcomingList.addEventListener('click', handleTaskAction);
+
+
+            // --- Core Functions ---
+
+            function addTask() {
+                const taskText = taskInput.value.trim();
+                if (taskText === '') {
+                    alert('Please enter a task description.');
+                    return;
+                }
+
+                const energy = document.querySelector('input[name="energy"]:checked').value;
+                const due = document.querySelector('input[name="due"]:checked').value;
+
+                const newTask = {
+                    id: Date.now(), // Simple unique ID
+                    text: taskText,
+                    energy: energy, // 'high' or 'low'
+                    due: due,       // 'today' or 'upcoming'
+                    completed: false
+                };
+
+                tasks.push(newTask);
+                saveTasks();
+                renderTasks();
+
+                // Reset input
+                taskInput.value = '';
+                document.querySelector('input[name="energy"][value="high"]').checked = true; // Default back to high
+                document.querySelector('input[name="due"][value="today"]').checked = true; // Default back to today
+                taskInput.focus();
+            }
+
+            function handleTaskAction(event) {
+                const target = event.target;
+                const taskItem = target.closest('.task-item');
+
+                if (!taskItem) return; // Clicked outside a task item
+
+                const taskId = Number(taskItem.dataset.id);
+
+                // Check if the click was on the delete button
+                if (target.classList.contains('delete-btn') || target.closest('.delete-btn')) {
+                    deleteTask(taskId);
+                }
+                // Check if the click was on the task text itself (for toggling complete)
+                else if (target.classList.contains('task-text') || target === taskItem) {
+                     toggleComplete(taskId);
+                }
+                 // Optional: if you add a dedicated complete button
+                 // else if (target.classList.contains('complete-btn') || target.closest('.complete-btn')) {
+                 //    toggleComplete(taskId);
+                 //}
+            }
+
+            function toggleComplete(taskId) {
+                tasks = tasks.map(task => {
+                    if (task.id === taskId) {
+                        return { ...task, completed: !task.completed };
+                    }
+                    return task;
+                });
+                saveTasks();
+                renderTasks();
+            }
+
+            function deleteTask(taskId) {
+                 if (confirm('Are you sure you want to delete this task?')) {
+                    tasks = tasks.filter(task => task.id !== taskId);
+                    saveTasks();
+                    renderTasks();
+                 }
+            }
+
+            function renderTasks() {
+                // Clear current lists
+                dueTodayList.innerHTML = '';
+                upcomingList.innerHTML = '';
+
+                // Filter tasks
+                const todayTasks = tasks.filter(task => task.due === 'today');
+                const upcomingTasks = tasks.filter(task => task.due === 'upcoming');
+
+                // Sort tasks: High energy first, then Low energy
+                const sortTasks = (a, b) => {
+                    if (a.energy === 'high' && b.energy === 'low') return -1;
+                    if (a.energy === 'low' && b.energy === 'high') return 1;
+                    return 0; // Keep original order if energy is the same (could sort by id/time added)
+                };
+
+                todayTasks.sort(sortTasks);
+                upcomingTasks.sort(sortTasks);
+
+                // Render lists
+                renderList(todayTasks, dueTodayList);
+                renderList(upcomingTasks, upcomingList);
+
+                // Add messages if lists are empty
+                addEmptyMessageIfNeeded(dueTodayList, 'No tasks due today!');
+                addEmptyMessageIfNeeded(upcomingList, 'No upcoming tasks.');
+            }
+
+            function renderList(taskListData, listElement) {
+                 // Separate high and low energy for subheading structure
+                const highEnergyTasks = taskListData.filter(t => t.energy === 'high');
+                const lowEnergyTasks = taskListData.filter(t => t.energy === 'low');
+
+                if (highEnergyTasks.length > 0) {
+                    const heading = document.createElement('h3');
+                    heading.textContent = 'High Energy';
+                    listElement.appendChild(heading);
+                    highEnergyTasks.forEach(task => listElement.appendChild(createTaskElement(task)));
+                }
+
+                 if (lowEnergyTasks.length > 0) {
+                    const heading = document.createElement('h3');
+                    heading.textContent = 'Low Energy';
+                    listElement.appendChild(heading);
+                    lowEnergyTasks.forEach(task => listElement.appendChild(createTaskElement(task)));
+                }
+            }
+
+
+            function createTaskElement(task) {
+                const li = document.createElement('li');
+                li.classList.add('task-item', `${task.energy}-energy`);
+                li.dataset.id = task.id; // Store ID for later retrieval
+
+                if (task.completed) {
+                    li.classList.add('completed');
+                }
+
+                const textSpan = document.createElement('span');
+                textSpan.classList.add('task-text');
+                textSpan.textContent = task.text;
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.classList.add('task-actions');
+
+                // Optional Complete Button (currently using text click)
+                // const completeBtn = document.createElement('button');
+                // completeBtn.innerHTML = '&#10004;'; // Checkmark
+                // completeBtn.title = "Mark Complete";
+                // completeBtn.classList.add('complete-btn');
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = '&#10006;'; // Cross mark
+                deleteBtn.title = "Delete Task";
+                deleteBtn.classList.add('delete-btn');
+
+                // actionsDiv.appendChild(completeBtn); // Add if using button
+                actionsDiv.appendChild(deleteBtn);
+
+                li.appendChild(textSpan);
+                li.appendChild(actionsDiv);
+
+                return li;
+            }
+
+             function addEmptyMessageIfNeeded(listElement, message) {
+                if (listElement.children.length === 0) {
+                    const li = document.createElement('li');
+                    li.textContent = message;
+                    li.classList.add('empty-list-message');
+                    listElement.appendChild(li);
+                }
+            }
+
+
+            // --- Local Storage ---
+
+            function saveTasks() {
+                localStorage.setItem('dailyEnergyTasks', JSON.stringify(tasks));
+            }
+
+            function loadTasks() {
+                const storedTasks = localStorage.getItem('dailyEnergyTasks');
+                return storedTasks ? JSON.parse(storedTasks) : [];
+            }
+
+            // --- Initial Render ---
+            renderTasks();
+        });
+    </script>
+
+</body>
+</html>

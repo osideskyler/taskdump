@@ -43,30 +43,44 @@
         /* Input Area */
         .input-area {
             display: flex;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            flex-wrap: wrap; /* Allow wrapping */
             gap: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 15px; /* Reduced margin */
             padding-bottom: 20px;
             border-bottom: 1px solid #eee;
+            align-items: center; /* Align items vertically */
         }
 
         #task-input {
-            flex-grow: 1; /* Take available space */
+            flex: 1 1 250px; /* Grow, shrink, basis */
             padding: 12px 15px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 1rem;
-            min-width: 200px; /* Ensure it doesn't get too small */
         }
 
-        .input-options {
+        .input-options-container {
+             display: flex;
+             flex-wrap: wrap;
+             gap: 15px;
+             align-items: center;
+             flex: 1 1 auto; /* Allow options to take space */
+             justify-content: space-between; /* Space out groups */
+        }
+
+        .input-group {
             display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap; /* Allow options to wrap too */
+            flex-direction: column; /* Stack label and input/radios */
+            gap: 5px;
+        }
+        .input-group span { /* Label for the group */
+            font-size: 0.85rem;
+            color: #555;
+            font-weight: 500;
+            margin-bottom: 3px;
         }
 
-        .input-options label {
+        .input-group label { /* Radio/checkbox labels */
             display: flex;
             align-items: center;
             gap: 5px;
@@ -75,9 +89,16 @@
             color: #555;
         }
 
-         .input-options input[type="radio"] {
+         .input-group input[type="radio"] {
             margin-right: 3px;
              accent-color: #3498db; /* Modern look for radio */
+         }
+         #task-minutes {
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            width: 80px; /* Fixed width for minutes */
          }
 
         #add-task-btn {
@@ -91,10 +112,29 @@
             font-weight: 500;
             transition: background-color 0.2s ease;
             white-space: nowrap; /* Prevent button text wrapping */
+            flex-shrink: 0; /* Prevent button from shrinking too much */
+            margin-top: 10px; /* Add space when wrapped */
         }
+         @media (min-width: 650px) { /* Adjust breakpoint as needed */
+             #add-task-btn {
+                 margin-top: 0; /* No top margin on wider screens */
+             }
+         }
 
         #add-task-btn:hover {
             background-color: #2980b9;
+        }
+
+        /* Total Minutes Display */
+        #total-minutes-display {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #34495e;
+            margin: 0 0 25px 0; /* Margin below */
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
         }
 
         /* Task Sections */
@@ -140,6 +180,7 @@
             align-items: center;
             transition: background-color 0.2s ease, opacity 0.3s ease;
             word-break: break-word; /* Prevent long text overflow */
+            gap: 10px; /* Add gap between text/minutes and actions */
         }
 
         .task-item:hover {
@@ -154,43 +195,53 @@
             border-left: 4px solid #3498db; /* Blue for low energy */
         }
 
-        .task-item .task-text {
+        .task-content { /* Group text and minutes */
             flex-grow: 1;
-            margin-right: 15px;
-             cursor: pointer; /* Indicate it's clickable for completion */
+            margin-right: 10px;
+            cursor: pointer; /* Indicate it's clickable for completion */
+            display: flex; /* Use flex to align text and minutes */
+            flex-direction: column; /* Stack text and minutes vertically */
         }
+         .task-text {
+             /* Main task text styling */
+         }
+         .task-minutes-display {
+             font-size: 0.8rem;
+             color: #888;
+             margin-top: 2px;
+         }
 
-        .task-item.completed .task-text {
+        .task-item.completed .task-content { /* Apply style to group */
             text-decoration: line-through;
             color: #95a5a6;
         }
+         .task-item.completed .task-minutes-display {
+             color: #b0b8b9; /* Lighter gray when completed */
+         }
+
         .task-item.completed {
             opacity: 0.7;
              background-color: #f0f0f0;
         }
 
+        .task-actions {
+            flex-shrink: 0; /* Prevent actions from shrinking */
+            display: flex;
+            gap: 5px;
+        }
         .task-actions button {
             background: none;
             border: none;
             cursor: pointer;
             font-size: 1.1rem;
             padding: 5px;
-            margin-left: 5px;
             color: #7f8c8d;
             transition: color 0.2s ease;
         }
 
-         .task-actions .complete-btn {
-            /* Optional: Style if using a button instead of clicking text */
-            /* color: #2ecc71; */
-         }
          .task-actions .delete-btn {
              color: #e74c3c;
          }
-
-        .task-actions button:hover {
-            /* color: #34495e; */
-        }
         .task-actions .delete-btn:hover {
              color: #c0392b;
          }
@@ -205,37 +256,35 @@
         }
 
         /* Responsive Adjustments */
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            .container {
-                padding: 20px;
-            }
-            .input-area {
+        @media (max-width: 700px) {
+             .input-area {
                 flex-direction: column;
                 align-items: stretch; /* Make items full width */
-            }
-            .input-options {
-                justify-content: space-around; /* Better spacing on small screens */
-                margin-top: 10px;
-            }
-            #add-task-btn {
-                width: 100%; /* Full width button */
-                margin-top: 10px;
-            }
-             .task-item {
+             }
+             .input-options-container {
+                 justify-content: space-around; /* Even spacing */
+                 margin-top: 10px;
+                 width: 100%;
+             }
+             #add-task-btn {
+                 width: 100%;
+                 margin-top: 15px;
+             }
+        }
+        @media (max-width: 480px) {
+            .task-item {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 8px;
             }
             .task-actions {
                 width: 100%;
-                text-align: right;
+                justify-content: flex-end; /* Align buttons to the right */
                 margin-top: 5px;
             }
-             .task-item .task-text {
+             .task-content {
                  margin-right: 0;
+                 width: 100%; /* Take full width */
              }
         }
 
@@ -249,18 +298,33 @@
         <!-- Input Area -->
         <div class="input-area">
             <input type="text" id="task-input" placeholder="Enter new task...">
-            <div class="input-options">
-                <div>
-                    <label><input type="radio" name="energy" value="high" checked> High Energy</label>
-                    <label><input type="radio" name="energy" value="low"> Low Energy</label>
+
+            <div class="input-options-container">
+                <div class="input-group">
+                    <span>Energy</span>
+                    <div>
+                        <label><input type="radio" name="energy" value="high" checked> High</label>
+                        <label><input type="radio" name="energy" value="low"> Low</label>
+                    </div>
                 </div>
-                <div>
-                    <label><input type="radio" name="due" value="today" checked> Due Today</label>
-                    <label><input type="radio" name="due" value="upcoming"> Upcoming</label>
+                <div class="input-group">
+                    <span>Due</span>
+                    <div>
+                        <label><input type="radio" name="due" value="today" checked> Today</label>
+                        <label><input type="radio" name="due" value="upcoming"> Upcoming</label>
+                    </div>
                 </div>
+                 <div class="input-group">
+                     <span>Minutes</span>
+                    <input type="number" id="task-minutes" placeholder="Mins" min="1" step="1">
+                 </div>
             </div>
+
             <button id="add-task-btn">Add Task</button>
         </div>
+
+        <!-- Total Minutes Display Area -->
+        <div id="total-minutes-display">Estimated time: 0 minutes</div>
 
         <!-- Task Display Area -->
         <div class="task-sections">
@@ -283,33 +347,46 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const taskInput = document.getElementById('task-input');
+            const minutesInput = document.getElementById('task-minutes');
             const addTaskBtn = document.getElementById('add-task-btn');
             const dueTodayList = document.getElementById('due-today-list');
             const upcomingList = document.getElementById('upcoming-list');
+            const totalMinutesDisplay = document.getElementById('total-minutes-display');
 
             let tasks = loadTasks();
 
             // --- Event Listeners ---
             addTaskBtn.addEventListener('click', addTask);
-            taskInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    addTask();
-                }
-            });
+            taskInput.addEventListener('keypress', handleInputKeypress);
+            minutesInput.addEventListener('keypress', handleInputKeypress); // Add Enter listener to minutes too
 
             // Use event delegation for task actions (complete/delete)
             dueTodayList.addEventListener('click', handleTaskAction);
             upcomingList.addEventListener('click', handleTaskAction);
 
-
             // --- Core Functions ---
+
+             function handleInputKeypress(e) {
+                 if (e.key === 'Enter') {
+                    addTask();
+                 }
+             }
 
             function addTask() {
                 const taskText = taskInput.value.trim();
+                const minutesValue = parseInt(minutesInput.value, 10);
+
                 if (taskText === '') {
                     alert('Please enter a task description.');
+                    taskInput.focus();
                     return;
                 }
+                if (isNaN(minutesValue) || minutesValue <= 0) {
+                    alert('Please enter a valid number of minutes (greater than 0).');
+                    minutesInput.focus();
+                    return;
+                }
+
 
                 const energy = document.querySelector('input[name="energy"]:checked').value;
                 const due = document.querySelector('input[name="due"]:checked').value;
@@ -317,6 +394,7 @@
                 const newTask = {
                     id: Date.now(), // Simple unique ID
                     text: taskText,
+                    minutes: minutesValue, // Add minutes
                     energy: energy, // 'high' or 'low'
                     due: due,       // 'today' or 'upcoming'
                     completed: false
@@ -328,6 +406,7 @@
 
                 // Reset input
                 taskInput.value = '';
+                minutesInput.value = ''; // Clear minutes input
                 document.querySelector('input[name="energy"][value="high"]').checked = true; // Default back to high
                 document.querySelector('input[name="due"][value="today"]').checked = true; // Default back to today
                 taskInput.focus();
@@ -345,14 +424,10 @@
                 if (target.classList.contains('delete-btn') || target.closest('.delete-btn')) {
                     deleteTask(taskId);
                 }
-                // Check if the click was on the task text itself (for toggling complete)
-                else if (target.classList.contains('task-text') || target === taskItem) {
+                // Check if the click was on the task content area (for toggling complete)
+                else if (target.classList.contains('task-content') || target.closest('.task-content')) {
                      toggleComplete(taskId);
                 }
-                 // Optional: if you add a dedicated complete button
-                 // else if (target.classList.contains('complete-btn') || target.closest('.complete-btn')) {
-                 //    toggleComplete(taskId);
-                 //}
             }
 
             function toggleComplete(taskId) {
@@ -363,14 +438,14 @@
                     return task;
                 });
                 saveTasks();
-                renderTasks();
+                renderTasks(); // Re-render to update style and total minutes
             }
 
             function deleteTask(taskId) {
                  if (confirm('Are you sure you want to delete this task?')) {
                     tasks = tasks.filter(task => task.id !== taskId);
                     saveTasks();
-                    renderTasks();
+                    renderTasks(); // Re-render to remove item and update total minutes
                  }
             }
 
@@ -387,7 +462,9 @@
                 const sortTasks = (a, b) => {
                     if (a.energy === 'high' && b.energy === 'low') return -1;
                     if (a.energy === 'low' && b.energy === 'high') return 1;
-                    return 0; // Keep original order if energy is the same (could sort by id/time added)
+                    // Optional secondary sort (e.g., by ID/time added) if energies are the same
+                    // return a.id - b.id;
+                    return 0;
                 };
 
                 todayTasks.sort(sortTasks);
@@ -400,6 +477,9 @@
                 // Add messages if lists are empty
                 addEmptyMessageIfNeeded(dueTodayList, 'No tasks due today!');
                 addEmptyMessageIfNeeded(upcomingList, 'No upcoming tasks.');
+
+                 // Update the total minutes display
+                 updateTotalMinutesDisplay();
             }
 
             function renderList(taskListData, listElement) {
@@ -432,40 +512,66 @@
                     li.classList.add('completed');
                 }
 
+                // Container for text and minutes
+                const contentDiv = document.createElement('div');
+                contentDiv.classList.add('task-content');
+
                 const textSpan = document.createElement('span');
                 textSpan.classList.add('task-text');
                 textSpan.textContent = task.text;
 
+                const minutesSpan = document.createElement('span');
+                minutesSpan.classList.add('task-minutes-display');
+                // Handle cases where minutes might be missing (e.g., older saved tasks)
+                minutesSpan.textContent = `${task.minutes || '?'} min`;
+
+                contentDiv.appendChild(textSpan);
+                contentDiv.appendChild(minutesSpan);
+
+                // Action buttons
                 const actionsDiv = document.createElement('div');
                 actionsDiv.classList.add('task-actions');
 
-                // Optional Complete Button (currently using text click)
-                // const completeBtn = document.createElement('button');
-                // completeBtn.innerHTML = '&#10004;'; // Checkmark
-                // completeBtn.title = "Mark Complete";
-                // completeBtn.classList.add('complete-btn');
-
                 const deleteBtn = document.createElement('button');
-                deleteBtn.innerHTML = '&#10006;'; // Cross mark
+                deleteBtn.innerHTML = '✖'; // Cross mark (X)
                 deleteBtn.title = "Delete Task";
                 deleteBtn.classList.add('delete-btn');
 
-                // actionsDiv.appendChild(completeBtn); // Add if using button
                 actionsDiv.appendChild(deleteBtn);
 
-                li.appendChild(textSpan);
-                li.appendChild(actionsDiv);
+                li.appendChild(contentDiv); // Add content group
+                li.appendChild(actionsDiv); // Add actions
 
                 return li;
             }
 
              function addEmptyMessageIfNeeded(listElement, message) {
-                if (listElement.children.length === 0) {
+                // Check if list has actual task items, not just headings
+                const hasTasks = Array.from(listElement.children).some(child => child.tagName === 'LI' && !child.classList.contains('empty-list-message'));
+                if (!hasTasks) {
+                     // Remove any existing empty message first
+                    const existingMsg = listElement.querySelector('.empty-list-message');
+                    if (existingMsg) existingMsg.remove();
+
                     const li = document.createElement('li');
                     li.textContent = message;
                     li.classList.add('empty-list-message');
                     listElement.appendChild(li);
+                } else {
+                    // If tasks exist, ensure no empty message is shown
+                     const existingMsg = listElement.querySelector('.empty-list-message');
+                     if (existingMsg) existingMsg.remove();
                 }
+            }
+
+            function updateTotalMinutesDisplay() {
+                const totalMinutes = tasks.reduce((sum, task) => {
+                    // Only add minutes from incomplete tasks
+                    // Use || 0 to handle tasks saved before minutes were added
+                    return sum + (!task.completed ? (parseInt(task.minutes || 0, 10)) : 0);
+                }, 0);
+
+                totalMinutesDisplay.textContent = `Estimated time for incomplete tasks: ${totalMinutes} minutes`;
             }
 
 
@@ -477,11 +583,18 @@
 
             function loadTasks() {
                 const storedTasks = localStorage.getItem('dailyEnergyTasks');
-                return storedTasks ? JSON.parse(storedTasks) : [];
+                // Basic check if storedTasks is valid JSON array
+                try {
+                    const parsedTasks = JSON.parse(storedTasks);
+                    return Array.isArray(parsedTasks) ? parsedTasks : [];
+                } catch (e) {
+                    console.error("Error parsing tasks from localStorage", e);
+                    return []; // Return empty array on error
+                }
             }
 
             // --- Initial Render ---
-            renderTasks();
+            renderTasks(); // Render existing tasks and calculate initial total
         });
     </script>
 
